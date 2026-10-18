@@ -1,0 +1,133 @@
+/* ==============================
+   2. HEADER
+   ============================== */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    padding: 20px max(
+        var(--page-padding),
+        calc((100% - var(--page-width)) / 2)
+    );
+
+    border-bottom: 1px solid var(--border);
+    background-color: var(--surface);
+}
+
+.app-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--text-primary);
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.app-brand .material-symbols-rounded {
+    color: var(--accent);
+    font-size: 30px;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* ==============================
+   3. SEARCH PLACEHOLDER
+   ============================== */
+
+.search-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 240px;
+    min-height: 42px;
+    padding: 0 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-small);
+
+    background-color: var(--background);
+    color: var(--text-secondary);
+
+    font-size: 0.9rem;
+}
+
+
+/* ==============================
+   4. HEADER BUTTONS
+   ============================== */
+
+.header-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 42px;
+    min-height: 42px;
+    padding: 8px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-small);
+
+    background-color: var(--surface);
+    color: var(--text-primary);
+
+    font-weight: 600;
+
+    transition:
+        background-color var(--transition-speed) ease,
+        border-color var(--transition-speed) ease;
+}
+
+.header-button:hover {
+    background-color: var(--surface-secondary);
+}
+
+.header-button .material-symbols-rounded {
+    font-size: 21px;
+}
+
+/*====== RESPONSIVE HEADER =======*/
+
+@media(max-width: 800px){
+    .app-header {
+        flex-wrap: wrap;
+    }
+
+    .header-controls {
+        flex-wrap: wrap;
+    }
+
+    .search-placeholder {
+        width: 200px;
+    }
+}
+
+@media(max-width: 500px){
+      .app-header {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .header-controls {
+        width: 100%;
+        gap: 8px;
+    }
+
+    .search-placeholder {
+        flex: 1;
+        width: auto;
+        min-width: 0;
+    }
+}

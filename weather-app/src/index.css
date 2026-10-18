@@ -1,5 +1,106 @@
-*{
-  margin: 0;
+/*======== GLOBAL STYLING VARIABLES =======*/
+
+:root{
+  /*Accent Colours*/
+  --accent: hsl(222, 78%, 56%);
+  --accent-hover: hsl(223, 67%, 47%);
+
+  /*Status Colours*/
+  --success: hsl(142, 71%, 29%);
+  --error: hsl(345, 83%, 41%);
+
+  /*Fonts*/
+  --font-family: Helvetica, system-ui, sans-serif;
+
+  /*Layout*/
+  --page-width: 1200px;
+  --page-padding: 20px;
+
+  /*Borders and Shapes*/
+  --border-radius: 10px;
+  --border-radius-small: 8px;
+
+  /*Transitions*/
+  --transition-speed: 200ms;
+}
+
+/*======= LIGHT THEME ========*/
+
+:root, [data-theme = "light"]{
+  color-scheme: light;
+
+  --background: hsl(220, 55%, 95%);
+  --surface: hsl(0, 0%, 100%);
+  --surface-secondary: hsl(215, 55%, 95%);
+  --text-primary: hsl(220, 55%, 20%);
+  --text-secondary: hsl(215, 20%, 50%);
+  --border: hsl(215, 40%, 90%);
+  --accent: hsl(220, 80%, 55%);
+  --accent-hover: hsl(220, 80%, 45%);
+  --success: hsl(140, 70%, 30%);
+  --error: hsl(345, 85%, 40%);
+}
+
+:root, [data-theme = "dark"]{
+  color-scheme: dark;
+
+  --background: hsl(220, 50%, 10%);
+  --surface: hsl(220, 45%, 15%);
+  --surface-secondary: hsl(215, 40%, 20%);
+  --text-primary: hsl(220, 65%, 95%);
+  --text-secondary: hsl(215, 25%, 75%);
+  --border: hsl(220, 35%, 25%);
+  --accent: hsl(220, 100%, 75%);
+  --accent-hover: hsl(220, 100%, 80%);
+  --success: hsl(140, 70%, 60%);
+  --error: hsl(355, 95%, 85%);
+}
+
+*, *::before, *::after{
   padding: 0;
   box-sizing: border-box;
+}
+html{
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+body{
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  background-color: var(--background);
+  color: var(--text-primary);
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+/*======= GLOBAL ELEMENT STYLES =======*/
+
+button, input, textarea, select {
+  font: inherit;
+}
+button{
+  cursor: pointer;
+}
+a{
+  color: var(--accent);
+}
+img, svg{
+  display: block;
+  max-width: 100%;
+}
+
+/*========= ACCESSIBILITY ========*/
+
+:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media(prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
