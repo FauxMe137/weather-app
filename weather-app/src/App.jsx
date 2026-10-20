@@ -2,7 +2,7 @@ import './App.css';
 import CurrentWeather from './components/CurrentWeather/CurrentWeather';
 import Header from './components/Header/Header';
 import WeatherDetails from './components/WeatherDetails/WeatherDetails';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 function App(){
     const [theme, setTheme] = useState("light");
@@ -11,74 +11,6 @@ function App(){
     const [weather, setWeather] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
-    async function fetchWeather(latitude, longitude, cityName) {
-        setLoading(true);
-        setError('');
-
-        try {
-            const url = new URL(
-                'https://api.open-meteo.com/v1/forecast'
-            );
-
-            url.search = new URLSearchParams({
-                latitude: latitude,
-                longitude: longitude,
-                current: [
-                    'temperature_2m',
-                    'relative_humidity_2m',
-                    'apparent_temperature',
-                    'is_day',
-                    'precipitation',
-                    'rain',
-                    'showers',
-                    'snowfall',
-                    'weather_code',
-                    'cloud_cover',
-                    'pressure_msl',
-                    'surface_pressure',
-                    'wind_speed_10m',
-                    'wind_direction_10m',
-                    'wind_gusts_10m',
-                ].join(','),
-                hourly: 'uv_index',
-                forecast_days: '1',
-                timezone: 'auto',
-                wind_speed_unit: 'kmh',
-            });
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error('Unable to retrieve weather data.');
-            }
-
-            const data = await response.json();
-
-            if (!data.current) {
-                throw new Error('Weather data is unavailable for this location.');
-            }
-
-            const current = data.current;
-
-            setWeather({
-                location: cityName,
-                temperature: current.temperature_2m,
-                condition: getWeatherCondition(current.weather_code),
-                humidity: current.relative_humidity_2m,
-                windSpeed: current.wind_speed_10m,
-                windDirection: getWindDirection(current.wind_direction_10m),
-                precipitation: current.precipitation,
-                pressure: current.surface_pressure,
-                uvIndex: getCurrentUVIndex(data),
-            });
-        } catch (error) {
-            console.error('Weather request failed:', error);
-            setError(error.message || 'Something went wrong while fetching the weather.');
-        } finally {
-            setLoading(false);
-        }
-    }
 
     function getWeatherCondition(code) {
         if (code === 0) return 'Clear Sky';
@@ -135,6 +67,76 @@ function App(){
 
         return index !== -1 ? values[index] : 'N/A';
     }
+
+    const fetchWeather = useCallback(
+        async(latitude, longitude, cityName) => {
+            setLoading(true);
+            setError('');
+
+            try {
+                const url = new URL(
+                    'https://api.open-meteo.com/v1/forecast'
+                );
+
+                url.search = new URLSearchParams({
+                    latitude: latitude,
+                    longitude: longitude,
+                    current: [
+                        'temperature_2m',
+                        'relative_humidity_2m',
+                        'apparent_temperature',
+                        'is_day',
+                        'precipitation',
+                        'rain',
+                        'showers',
+                        'snowfall',
+                        'weather_code',
+                        'cloud_cover',
+                        'pressure_msl',
+                        'surface_pressure',
+                        'wind_speed_10m',
+                        'wind_direction_10m',
+                        'wind_gusts_10m',
+                    ].join(','),
+                    hourly: 'uv_index',
+                    forecast_days: '1',
+                    timezone: 'auto',
+                    wind_speed_unit: 'kmh',
+                });
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error('Unable to retrieve weather data.');
+                }
+
+                const data = await response.json();
+
+                if (!data.current) {
+                    throw new Error('Weather data is unavailable for this location.');
+                }
+
+                const current = data.current;
+
+                setWeather({
+                    location: cityName,
+                    temperature: current.temperature_2m,
+                    condition: getWeatherCondition(current.weather_code),
+                    humidity: current.relative_humidity_2m,
+                    windSpeed: current.wind_speed_10m,
+                    windDirection: getWindDirection(current.wind_direction_10m),
+                    precipitation: current.precipitation,
+                    pressure: current.surface_pressure,
+                    uvIndex: getCurrentUVIndex(data),
+                });
+            } catch (error) {
+                console.error('Weather request failed:', error);
+                setError(error.message || 'Something went wrong while fetching the weather.');
+            } finally {
+                setLoading(false);
+            }
+        }, []
+    );
 
     async function handleSearchLocation(event) {
         event.preventDefault();
@@ -248,7 +250,7 @@ function App(){
         }
 
         loadInitialWeather();
-    }, []);
+    }, [fetchWeather]);
 
     return(
         <div className="app">

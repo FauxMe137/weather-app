@@ -19,6 +19,7 @@ function Header({theme, onToggleTheme, temperatureUnit, onToggleTemperatureUnit,
                             value={searchQuery}
                             onChange={(event) => setSearchQuery(event.target.value)}
                             aria-label="Search location"
+                            name="search-location"
                         />
 
                         <button type="submit" aria-label="Submit location search">

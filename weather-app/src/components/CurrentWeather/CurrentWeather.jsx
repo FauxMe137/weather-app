@@ -1,7 +1,8 @@
 import './CurrentWeather.css';
 
 function CurrentWeather({location, temperature, condition, temperatureUnit}){
-    const displayedTemperature = temperatureUnit === "C" ? temperature : (temperature * 9)/5 + 32; 
+    const displayedTemperature = temperatureUnit === "C" ? temperature : Math.round(((temperature * 9)/5 + 32) * 10)/10;
+    
     return (
         <section className="current-weather">
             <div className="current-weather-info">
