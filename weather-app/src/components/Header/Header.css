@@ -1,5 +1,5 @@
 /* ==============================
-   2. HEADER
+   HEADER
    ============================== */
 
 .app-header {
@@ -42,17 +42,17 @@
 
 
 /* ==============================
-   3. SEARCH PLACEHOLDER
+   LOCATION SEARCH
    ============================== */
 
-.search-placeholder {
+.location-search {
     display: flex;
     align-items: center;
     gap: 10px;
 
     width: 240px;
     min-height: 42px;
-    padding: 0 14px;
+    padding: 0 10px 0 14px;
 
     border: 1px solid var(--border);
     border-radius: var(--border-radius-small);
@@ -63,9 +63,56 @@
     font-size: 0.9rem;
 }
 
+.location-search:focus-within {
+    border-color: var(--accent);
+}
+
+.location-search > .material-symbols-rounded {
+    flex-shrink: 0;
+}
+
+.location-search input {
+    flex: 1;
+    min-width: 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+    color: var(--text-primary);
+
+    font: inherit;
+}
+
+.location-search input::placeholder {
+    color: var(--text-secondary);
+}
+
+.location-search button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px;
+    border: none;
+
+    background: transparent;
+    color: var(--text-secondary);
+
+    cursor: pointer;
+}
+
+.location-search button:hover {
+    color: var(--accent);
+}
+
+.location-search button .material-symbols-rounded {
+    font-size: 20px;
+}
+
 
 /* ==============================
-   4. HEADER BUTTONS
+   HEADER BUTTONS
    ============================== */
 
 .header-button {
@@ -109,7 +156,7 @@
         flex-wrap: wrap;
     }
 
-    .search-placeholder {
+    .location-search {
         width: 200px;
     }
 }
@@ -125,7 +172,7 @@
         gap: 8px;
     }
 
-    .search-placeholder {
+    .location-search {
         flex: 1;
         width: auto;
         min-width: 0;

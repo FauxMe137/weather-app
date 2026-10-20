@@ -41,7 +41,7 @@
   --error: hsl(345, 85%, 40%);
 }
 
-:root, [data-theme = "dark"]{
+[data-theme = "dark"]{
   color-scheme: dark;
 
   --background: hsl(220, 50%, 10%);

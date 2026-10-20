@@ -1,20 +1,180 @@
 import './App.css';
+import CurrentWeather from './components/CurrentWeather/CurrentWeather';
 import Header from './components/Header/Header';
+import WeatherDetails from './components/WeatherDetails/WeatherDetails';
+import { useEffect, useState } from 'react';
 
 function App(){
-    const weather = {
-        location: 'Lagos, Nigeria',
-        temperature: '29',
-        condition: 'Partly Cloudy',
-        humidity: '72',
-        windSpeed: '14',
-        windDirection: 'Southwest',
-        precipitation: '0.2',
-        pressure: '1012',
-        uvIndex: '7'
-    };
+    const [theme, setTheme] = useState("light");
+    const [temperatureUnit, setTemperatureUnit] = useState("C");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [weather, setWeather] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const weatherDetails = [
+    async function fetchWeather(latitude, longitude, cityName) {
+        setLoading(true);
+        setError('');
+
+        try {
+            const url = new URL(
+                'https://api.open-meteo.com/v1/forecast'
+            );
+
+            url.search = new URLSearchParams({
+                latitude: latitude,
+                longitude: longitude,
+                current: [
+                    'temperature_2m',
+                    'relative_humidity_2m',
+                    'apparent_temperature',
+                    'is_day',
+                    'precipitation',
+                    'rain',
+                    'showers',
+                    'snowfall',
+                    'weather_code',
+                    'cloud_cover',
+                    'pressure_msl',
+                    'surface_pressure',
+                    'wind_speed_10m',
+                    'wind_direction_10m',
+                    'wind_gusts_10m',
+                ].join(','),
+                hourly: 'uv_index',
+                forecast_days: '1',
+                timezone: 'auto',
+                wind_speed_unit: 'kmh',
+            });
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error('Unable to retrieve weather data.');
+            }
+
+            const data = await response.json();
+
+            if (!data.current) {
+                throw new Error('Weather data is unavailable for this location.');
+            }
+
+            const current = data.current;
+
+            setWeather({
+                location: cityName,
+                temperature: current.temperature_2m,
+                condition: getWeatherCondition(current.weather_code),
+                humidity: current.relative_humidity_2m,
+                windSpeed: current.wind_speed_10m,
+                windDirection: getWindDirection(current.wind_direction_10m),
+                precipitation: current.precipitation,
+                pressure: current.surface_pressure,
+                uvIndex: getCurrentUVIndex(data),
+            });
+        } catch (error) {
+            console.error('Weather request failed:', error);
+            setError(error.message || 'Something went wrong while fetching the weather.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function getWeatherCondition(code) {
+        if (code === 0) return 'Clear Sky';
+        if (code === 1) return 'Mainly Clear';
+        if (code === 2) return 'Partly Cloudy';
+        if (code === 3) return 'Overcast';
+
+        if ([45, 48].includes(code)) return 'Foggy';
+
+        if ([51, 53, 55].includes(code)) return 'Drizzle';
+        if ([56, 57].includes(code)) return 'Freezing Drizzle';
+
+        if ([61, 63, 65].includes(code)) return 'Rain';
+        if ([66, 67].includes(code)) return 'Freezing Rain';
+
+        if ([71, 73, 75, 77].includes(code)) return 'Snow';
+
+        if ([80, 81, 82].includes(code)) return 'Rain Showers';
+        if ([85, 86].includes(code)) return 'Snow Showers';
+
+        if ([95, 96, 99].includes(code)) return 'Thunderstorm';
+
+        return 'Unknown Conditions';
+    }
+
+    function getWindDirection(degrees) {
+        const directions = [
+            'North',
+            'Northeast',
+            'East',
+            'Southeast',
+            'South',
+            'Southwest',
+            'West',
+            'Northwest',
+        ];
+
+        return directions[Math.round(degrees / 45) % 8];
+    }
+
+    function getCurrentUVIndex(data) {
+        const times = data.hourly?.time;
+        const values = data.hourly?.uv_index;
+
+        if (!times || !values || !data.current?.time) {
+            return 'N/A';
+        }
+
+        const currentHour = data.current.time.slice(0, 13);
+
+        const index = times.findIndex(
+            (time) => time.slice(0, 13) === currentHour
+        );
+
+        return index !== -1 ? values[index] : 'N/A';
+    }
+
+    async function handleSearchLocation(event) {
+        event.preventDefault();
+
+        const city = searchQuery.trim();
+
+        if (!city) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=en&format=json`
+            );
+
+            if (!response.ok) {
+                throw new Error('Unable to search for this location.');
+            }
+
+            const data = await response.json();
+
+            if (!data.results || data.results.length === 0) {
+                console.log('No matching location found.');
+                return;
+            }
+
+            const result = data.results[0];
+            const cityName = `${result.name}, ${result.country}`;
+
+            await fetchWeather(result.latitude, result.longitude, cityName);
+
+            setSearchQuery('');
+
+            console.log('Selected location:', result);
+        } catch (error) {
+            console.error('Location search failed:', error);
+        }
+    }
+
+    const weatherDetails = weather ? [
         {
             id: 'humidity',
             label: 'Humidity',
@@ -51,44 +211,65 @@ function App(){
             value: weather.uvIndex,
             icon: 'wb_sunny',
         },
-    ];
+    ] : [];
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+    }, [theme]);
+
+    useEffect(() => {
+        async function loadInitialWeather() {
+            try {
+                const response = await fetch(
+                    'https://geocoding-api.open-meteo.com/v1/search?name=Lagos&count=1&language=en&format=json'
+                );
+
+                if (!response.ok) {
+                    throw new Error('Unable to find Lagos.');
+                }
+
+                const data = await response.json();
+
+                if (!data.results || data.results.length === 0) {
+                    throw new Error('Lagos could not be found.');
+                }
+
+                const result = data.results[0];
+
+                await fetchWeather(
+                    result.latitude,
+                    result.longitude,
+                    `${result.name}, ${result.country}`
+                );
+            } catch (error) {
+                console.error('Initial weather request failed:', error);
+                setError(error.message || 'Unable to load initial weather.');
+            }
+        }
+
+        loadInitialWeather();
+    }, []);
 
     return(
         <div className="app">
-            <Header/>
+            <Header theme={theme} onToggleTheme={() => {
+                setTheme((currentTheme) => currentTheme === "light" ? "dark" : "light");
+            }} temperatureUnit={temperatureUnit} onToggleTemperatureUnit={() => {
+                setTemperatureUnit((currentUnit) => currentUnit === "C" ? "F" : "C");
+            }} searchQuery={searchQuery} setSearchQuery={setSearchQuery} onSearchLocation={handleSearchLocation}/>
             
             <main className="dashboard">
-                <section className="current-weather">
-                    <div className="current-weather-info">
-                        <p className="section-label">CURRENT WEATHER</p>
-                        <h1>{weather.location}</h1>
-                        <p className="weather-condition">{weather.condition}</p>
-                        <p className="current-temperature">
-                            {weather.temperature}
-                            <span>°C</span>
-                        </p>
-                    </div>
+                {loading && !weather && <p>Loading weather...</p>}
 
-                    <div className="current-weather-icon" aria-hidden="true">
-                        <span className="material-symbols-rounded">partly_cloudy_day</span>
-                    </div>
-                </section>
+                {error && <p role='alert'>{error}</p>}
 
-                <section className="weather-details">
-                    <h2 className="section-label">WEATHER DETAILS</h2>
-                    <div className="weather-details-grid">
-                        {weatherDetails.map((detail) => (
-                            <article className="weather-detail-card" key={detail.id}>
-                                <div className="detail-card-heading">
-                                    <span className="material-symbols-rounded">{detail.icon}</span>
-                                    <h3>{detail.label}</h3>
-                                </div>
+                {weather && (
+                    <>
+                        <CurrentWeather location={weather.location} temperature={weather.temperature} condition={weather.condition} temperatureUnit={temperatureUnit}/>
 
-                                <p className="detail-card-value">{detail.value}</p>
-                            </article>
-                        ))}
-                    </div>
-                </section>
+                        <WeatherDetails details={weatherDetails}/>
+                    </>
+                )}
             </main>
         </div>
     );
