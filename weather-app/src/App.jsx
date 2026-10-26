@@ -3,6 +3,7 @@ import CurrentWeather from './components/CurrentWeather/CurrentWeather';
 import Header from './components/Header/Header';
 import HourlyForecast from './components/HourlyForecast/HourlyForecast';
 import WeatherDetails from './components/WeatherDetails/WeatherDetails';
+import DailyForecast from './components/DailyForecast/DailyForecast';
 import { useCallback, useEffect, useState } from 'react';
 
 function App(){
@@ -138,6 +139,12 @@ function App(){
                         'wind_direction_10m',
                         'wind_gusts_10m',
                     ].join(','),
+                    daily: [
+                        'weather_code',
+                        'temperature_2m_max',
+                        'temperature_2m_min',
+                        'precipitation_probability_max',
+                    ].join(','),
                     hourly: [
                         'temperature_2m',
                         'weather_code',
@@ -145,7 +152,7 @@ function App(){
                         'precipitation_probability',
                         'uv_index',
                     ].join(','),
-                    forecast_days: '1',
+                    forecast_days: '7',
                     timezone: 'auto',
                     wind_speed_unit: 'kmh',
                 });
@@ -179,6 +186,7 @@ function App(){
                     uvIndex: getCurrentUVIndex(data),
                     hourly: data.hourly,
                     currentTime: current.time,
+                    daily: data.daily,
                 });
             } catch (error) {
                 console.error('Weather request failed:', error);
@@ -325,6 +333,7 @@ function App(){
                             </div>
 
                             <HourlyForecast hourly={weather.hourly} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} currentTime={weather.currentTime} />
+                            <DailyForecast daily={weather.daily} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} getWeatherCondition={getWeatherCondition} />
                         </div>
                     </>
                 )}

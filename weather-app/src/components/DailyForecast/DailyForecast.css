@@ -1,0 +1,117 @@
+.daily-forecast {
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+    background-color: var(--surface);
+}
+
+.daily-forecast h2 {
+    margin: 0 0 20px;
+}
+
+.daily-forecast-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.daily-forecast-row {
+    display: grid;
+    grid-template-columns: 1.2fr 44px 1.5fr 1fr 70px;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.daily-forecast-row:last-child {
+    border-bottom: none;
+}
+
+.daily-forecast-row p {
+    margin: 0;
+}
+
+.daily-forecast-day {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.daily-forecast-icon {
+    color: var(--accent);
+    font-size: 30px;
+    text-align: center;
+}
+
+.daily-forecast-condition {
+    color: var(--text-secondary);
+}
+
+.daily-forecast-temperatures {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.daily-forecast-max {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.daily-forecast-min {
+    color: var(--text-secondary);
+}
+
+.daily-forecast-rain {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.daily-forecast-rain .material-symbols-rounded {
+    color: var(--accent);
+    font-size: 18px;
+}
+
+@media (max-width: 800px) {
+    .daily-forecast {
+        padding: 24px;
+    }
+
+    .daily-forecast-row {
+        grid-template-columns: 1fr 36px 1fr auto;
+        gap: 12px;
+    }
+
+    .daily-forecast-condition {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .daily-forecast {
+        padding: 20px;
+    }
+
+    .daily-forecast-row {
+        grid-template-columns: 1fr 32px auto 55px;
+        gap: 8px;
+        padding: 14px 0;
+    }
+
+    .daily-forecast-icon {
+        font-size: 26px;
+    }
+
+    .daily-forecast-temperatures {
+        gap: 6px;
+        font-size: 0.9rem;
+    }
+
+    .daily-forecast-rain {
+        font-size: 0.8rem;
+    }
+}
