@@ -1,6 +1,7 @@
 import './App.css';
 import CurrentWeather from './components/CurrentWeather/CurrentWeather';
 import Header from './components/Header/Header';
+import HourlyForecast from './components/HourlyForecast/HourlyForecast';
 import WeatherDetails from './components/WeatherDetails/WeatherDetails';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -67,6 +68,45 @@ function App(){
 
         return index !== -1 ? values[index] : 'N/A';
     }
+    function getWeatherIcon(code, isDay){
+        if(code === 0){
+            return isDay ? 'wb_sunny' : 'nightlight';
+        }
+
+        if(code === 1){
+            return isDay ? 'wb_sunny' : 'nightlight';
+        }
+
+        if(code === 2){
+            return 'partly_cloudy_day';
+        }
+
+        if(code === 3){
+            return 'cloud';
+        }
+
+        if([45,48].includes(code)){
+            return 'foggy';
+        }
+
+        if([51,53,55,56,57].includes(code)){
+            return 'rainy';
+        }
+
+        if([61,63,65,66,67,80,81,82].includes(code)){
+            return 'rainy';
+        }
+
+        if([71,73,75,77,85,86].includes(code)){
+            return 'weather_snowy';
+        }
+
+        if([95,96,99].includes(code)){
+            return 'thunderstorm';
+        }
+
+        return 'cloud';
+    }
 
     const fetchWeather = useCallback(
         async(latitude, longitude, cityName) => {
@@ -98,7 +138,13 @@ function App(){
                         'wind_direction_10m',
                         'wind_gusts_10m',
                     ].join(','),
-                    hourly: 'uv_index',
+                    hourly: [
+                        'temperature_2m',
+                        'weather_code',
+                        'is_day',
+                        'precipitation_probability',
+                        'uv_index',
+                    ].join(','),
                     forecast_days: '1',
                     timezone: 'auto',
                     wind_speed_unit: 'kmh',
@@ -122,12 +168,17 @@ function App(){
                     location: cityName,
                     temperature: current.temperature_2m,
                     condition: getWeatherCondition(current.weather_code),
+                    weatherCode: current.weather_code,
+                    isDay: current.is_day,
+                    feelsLike: current.apparent_temperature,
                     humidity: current.relative_humidity_2m,
                     windSpeed: current.wind_speed_10m,
                     windDirection: getWindDirection(current.wind_direction_10m),
                     precipitation: current.precipitation,
                     pressure: current.surface_pressure,
                     uvIndex: getCurrentUVIndex(data),
+                    hourly: data.hourly,
+                    currentTime: current.time,
                 });
             } catch (error) {
                 console.error('Weather request failed:', error);
@@ -267,9 +318,14 @@ function App(){
 
                 {weather && (
                     <>
-                        <CurrentWeather location={weather.location} temperature={weather.temperature} condition={weather.condition} temperatureUnit={temperatureUnit}/>
+                        <div className="weather-content">
+                            <div className="weather-dashboard">
+                                <CurrentWeather location={weather.location} temperature={weather.temperature} condition={weather.condition} temperatureUnit={temperatureUnit} weatherIcon={getWeatherIcon(weather.weatherCode, weather.isDay)} feelsLike={weather.feelsLike}/>
+                                <WeatherDetails details={weatherDetails}/>
+                            </div>
 
-                        <WeatherDetails details={weatherDetails}/>
+                            <HourlyForecast hourly={weather.hourly} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} currentTime={weather.currentTime} />
+                        </div>
                     </>
                 )}
             </main>

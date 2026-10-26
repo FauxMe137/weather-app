@@ -77,6 +77,12 @@
     font-size: 110px;
 }
 
+.feels-like{
+    margin: 12px 0 0;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
 /*====== RESPONSIVE LAYOUT =====*/
 
 @media(max-width: 800px){

@@ -1,0 +1,73 @@
+/* ==============================
+   HOURLY FORECAST
+   ============================== */
+
+.hourly-forecast {
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+    background-color: var(--surface);
+}
+
+.hourly-forecast h2 {
+    margin: 0 0 24px;
+}
+
+.hourly-forecast-list {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+}
+
+.hourly-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    min-width: 100px;
+    padding: 20px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background-color: var(--surface-secondary);
+}
+
+.hourly-card p {
+    margin: 0;
+}
+
+.hourly-time {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.hourly-icon {
+    color: var(--accent);
+    font-size: 36px;
+}
+
+.hourly-temperature {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+@media (max-width: 500px) {
+    .hourly-forecast {
+        padding: 20px;
+    }
+
+    .hourly-forecast-list {
+        gap: 12px;
+    }
+
+    .hourly-card {
+        min-width: 88px;
+        padding: 16px 10px;
+    }
+}

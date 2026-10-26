@@ -22,9 +22,28 @@
     padding-block: 32px 48px;
 }
 
+.weather-content{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.weather-dashboard {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
 /* ==============================
    8. RESPONSIVE LAYOUT
    ============================== */
+
+@media (max-width: 800px) {
+    .weather-dashboard {
+        grid-template-columns: 1fr;
+    }
+}
 
 @media (max-width: 500px) {
     .dashboard {
