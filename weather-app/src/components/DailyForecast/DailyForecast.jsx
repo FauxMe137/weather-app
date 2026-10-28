@@ -1,6 +1,7 @@
 import './DailyForecast.css';
+import { useState } from 'react';
 
-function DailyForecast({ daily, temperatureUnit, getWeatherIcon,getWeatherCondition }) {
+function DailyForecast({ daily, temperatureUnit, getWeatherIcon, getWeatherCondition }) {
     if (!daily) return null;
 
     const forecastDays = daily.time.map((date, index) => ({
@@ -37,10 +38,8 @@ function DailyForecast({ daily, temperatureUnit, getWeatherIcon,getWeatherCondit
                             ? 'Today'
                             : new Date(`${day.date}T12:00:00`).toLocaleDateString(
                                   undefined,
-                                  { weekday: 'long' }
+                                  { weekday: 'short' }
                               );
-
-                    const condition = getWeatherCondition(day.weatherCode);
 
                     return (
                         <article className="daily-forecast-row" key={day.date}>
@@ -51,18 +50,18 @@ function DailyForecast({ daily, temperatureUnit, getWeatherIcon,getWeatherCondit
                             </span>
 
                             <p className="daily-forecast-condition">
-                                {condition}
+                                {getWeatherCondition(day.weatherCode)}
                             </p>
 
-                            <div className="daily-forecast-temperatures">
+                            <p className="daily-forecast-temperatures">
                                 <span className="daily-forecast-max">
                                     {Math.round(displayedMaxTemperature)}°
                                 </span>
-
+                                {"/"}
                                 <span className="daily-forecast-min">
                                     {Math.round(displayedMinTemperature)}°
                                 </span>
-                            </div>
+                            </p>
 
                             <p className="daily-forecast-rain">
                                 <span className="material-symbols-rounded">

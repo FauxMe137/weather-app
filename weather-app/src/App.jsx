@@ -144,6 +144,9 @@ function App(){
                         'temperature_2m_max',
                         'temperature_2m_min',
                         'precipitation_probability_max',
+                        'sunrise',
+                        'sunset',
+                        'uv_index_max',
                     ].join(','),
                     hourly: [
                         'temperature_2m',
@@ -151,6 +154,7 @@ function App(){
                         'is_day',
                         'precipitation_probability',
                         'uv_index',
+                        'relative_humidity_2m',
                     ].join(','),
                     forecast_days: '7',
                     timezone: 'auto',

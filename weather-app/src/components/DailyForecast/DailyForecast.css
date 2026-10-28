@@ -6,69 +6,80 @@
 }
 
 .daily-forecast h2 {
-    margin: 0 0 20px;
+    margin: 0 0 24px;
 }
 
 .daily-forecast-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.daily-forecast-row {
     display: grid;
-    grid-template-columns: 1.2fr 44px 1.5fr 1fr 70px;
-    align-items: center;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(120px, 1fr);
     gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    padding-bottom: 12px;
 }
 
-.daily-forecast-row:last-child {
-    border-bottom: none;
+.daily-forecast-card {
+    display: flex;
+    flex: 1 0 120px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 120px;
+    padding: 20px 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background-color: var(--surface-secondary);
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.daily-forecast-row p {
+.daily-forecast-card p {
     margin: 0;
 }
 
 .daily-forecast-day {
-    color: var(--text-primary);
-    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .daily-forecast-icon {
     color: var(--accent);
-    font-size: 30px;
+    font-size: 36px;
+    display: block;
+    width: 100%;
     text-align: center;
 }
 
 .daily-forecast-condition {
     color: var(--text-secondary);
-}
-
-.daily-forecast-temperatures {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    font-size: 0.85rem;
+    text-align: center;
     white-space: nowrap;
 }
 
-.daily-forecast-max {
+.daily-forecast-temperatures {
     color: var(--text-primary);
+    font-size: 1rem;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .daily-forecast-min {
     color: var(--text-secondary);
+    font-weight: 400;
 }
 
 .daily-forecast-rain {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 4px;
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    width: 100%;
 }
 
 .daily-forecast-rain .material-symbols-rounded {
@@ -76,19 +87,9 @@
     font-size: 18px;
 }
 
-@media (max-width: 800px) {
-    .daily-forecast {
-        padding: 24px;
-    }
-
-    .daily-forecast-row {
-        grid-template-columns: 1fr 36px 1fr auto;
-        gap: 12px;
-    }
-
-    .daily-forecast-condition {
-        display: none;
-    }
+.daily-forecast-day, .daily-forecast-condition, .daily-forecast-temperatures{
+    text-align: center;
+    width: 100%;
 }
 
 @media (max-width: 500px) {
@@ -96,22 +97,17 @@
         padding: 20px;
     }
 
-    .daily-forecast-row {
-        grid-template-columns: 1fr 32px auto 55px;
-        gap: 8px;
-        padding: 14px 0;
+    .daily-forecast-list {
+        gap: 12px;
+    }
+
+    .daily-forecast-card {
+        min-width: 105px;
+        padding: 16px 10px;
+        flex: 0 0 105px;
     }
 
     .daily-forecast-icon {
-        font-size: 26px;
-    }
-
-    .daily-forecast-temperatures {
-        gap: 6px;
-        font-size: 0.9rem;
-    }
-
-    .daily-forecast-rain {
-        font-size: 0.8rem;
+        font-size: 32px;
     }
 }
