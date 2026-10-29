@@ -2,9 +2,9 @@ import './App.css';
 import CurrentWeather from './components/CurrentWeather/CurrentWeather';
 import Header from './components/Header/Header';
 import HourlyForecast from './components/HourlyForecast/HourlyForecast';
-import WeatherDetails from './components/WeatherDetails/WeatherDetails';
 import DailyForecast from './components/DailyForecast/DailyForecast';
 import { useCallback, useEffect, useState } from 'react';
+import WeatherAdvice from './components/WeatherAdvice/WeatherAdvice';
 
 function App(){
     const [theme, setTheme] = useState("light");
@@ -13,6 +13,7 @@ function App(){
     const [weather, setWeather] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [activeView, setActiveView] = useState("now");
 
     function getWeatherCondition(code) {
         if (code === 0) return 'Clear Sky';
@@ -58,7 +59,7 @@ function App(){
         const values = data.hourly?.uv_index;
 
         if (!times || !values || !data.current?.time) {
-            return 'N/A';
+            return '—';
         }
 
         const currentHour = data.current.time.slice(0, 13);
@@ -191,6 +192,8 @@ function App(){
                     hourly: data.hourly,
                     currentTime: current.time,
                     daily: data.daily,
+                    sunrise: data.daily.sunrise[0],
+                    sunset: data.daily.sunset[0],
                 });
             } catch (error) {
                 console.error('Weather request failed:', error);
@@ -290,13 +293,13 @@ function App(){
                 );
 
                 if (!response.ok) {
-                    throw new Error('Unable to find Lagos.');
+                    throw new Error('Unable to find Benin City.');
                 }
 
                 const data = await response.json();
 
                 if (!data.results || data.results.length === 0) {
-                    throw new Error('Lagos could not be found.');
+                    throw new Error('Benin City could not be found.');
                 }
 
                 const result = data.results[0];
@@ -331,13 +334,33 @@ function App(){
                 {weather && (
                     <>
                         <div className="weather-content">
-                            <div className="weather-dashboard">
-                                <CurrentWeather location={weather.location} temperature={weather.temperature} condition={weather.condition} temperatureUnit={temperatureUnit} weatherIcon={getWeatherIcon(weather.weatherCode, weather.isDay)} feelsLike={weather.feelsLike}/>
-                                <WeatherDetails details={weatherDetails}/>
-                            </div>
+                            <nav className="forecast-tabs" aria-label="Weather Forecast Views">
+                                <button className={activeView === 'now' ? 'active' : ''} type='button' onClick={() => setActiveView('now')}>Now</button>
 
-                            <HourlyForecast hourly={weather.hourly} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} currentTime={weather.currentTime} />
-                            <DailyForecast daily={weather.daily} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} getWeatherCondition={getWeatherCondition} hourly={weather.hourly} />
+                                <button className={activeView === 'hourly' ? 'active' : ''} type='button' onClick={() => setActiveView('hourly')}>Hourly Forecast</button>
+
+                                <button className={activeView === 'daily' ? 'active' : ''} type='button' onClick={() => setActiveView('daily')}>7-Day Forecast</button>
+                            </nav>
+
+                            {activeView === 'now' && (
+                                <div className="weather-dashboard">
+                                    <CurrentWeather location={weather.location} temperature={weather.temperature} condition={weather.condition} temperatureUnit={temperatureUnit} weatherIcon={getWeatherIcon(weather.weatherCode, weather.isDay)} feelsLike={weather.feelsLike} sunrise={weather.sunrise} sunset={weather.sunset} details={weatherDetails}/>
+
+                                    <WeatherAdvice humidity={weather.humidity} windSpeed={weather.windSpeed} feelsLike={weather.feelsLike} currentTime={weather.currentTime} uvIndex={weather.uvIndex} weatherCode={weather.weatherCode} hourly={weather.hourly}/>
+                                </div>
+                            )}
+                            
+                            {activeView === 'hourly' && (
+                                <div className="hourly-dashboard">
+                                    <HourlyForecast hourly={weather.hourly} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} currentTime={weather.currentTime} />
+                                </div>
+                            )}
+
+                            {activeView === 'daily' && (
+                                <div className="daily-dashboard">
+                                    <DailyForecast daily={weather.daily} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} getWeatherCondition={getWeatherCondition} hourly={weather.hourly} />
+                                </div>
+                            )}
                         </div>
                     </>
                 )}

@@ -4,17 +4,26 @@
 
 .current-weather {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 32px;
 
-    min-height: 280px;
     padding: 36px 40px;
 
     border: 1px solid var(--border);
     border-radius: var(--border-radius);
 
     background-color: var(--surface);
+}
+
+/* ==============================
+   MAIN WEATHER
+   ============================== */
+
+.current-weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
 }
 
 .section-label {
@@ -36,6 +45,7 @@
 
 .weather-condition {
     margin: 0;
+
     color: var(--text-secondary);
     font-size: 1rem;
 }
@@ -58,6 +68,13 @@
     letter-spacing: normal;
 }
 
+.feels-like {
+    margin: 12px 0 0;
+
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
 .current-weather-icon {
     display: flex;
     align-items: center;
@@ -77,15 +94,103 @@
     font-size: 110px;
 }
 
-.feels-like{
-    margin: 12px 0 0;
-    color: var(--text-secondary);
-    font-size: 1.2rem;
+/* ==============================
+   WEATHER DETAILS
+   ============================== */
+
+.weather-details {
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
 }
 
-/*====== RESPONSIVE LAYOUT =====*/
+.weather-details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 16px;
 
-@media(max-width: 800px){
+    margin-top: 20px;
+}
+
+.weather-detail-card {
+    min-width: 0;
+}
+
+.detail-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--text-secondary);
+}
+
+.detail-card-heading .material-symbols-rounded {
+    font-size: 20px;
+}
+
+.detail-card-heading h3 {
+    margin: 0;
+
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.detail-card-value {
+    margin: 10px 0 0;
+
+    font-size: 1.15rem;
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+}
+
+/* ==============================
+   SUNRISE AND SUNSET
+   ============================== */
+
+.sun-times {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.sun-time {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sun-time > .material-symbols-rounded {
+    color: var(--accent);
+    font-size: 32px;
+}
+
+.sunset > .material-symbols-rounded {
+    transform: rotate(180deg) translateX(4px);
+}
+
+.sun-time h3 {
+    margin: 0;
+
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.sun-time p {
+    margin: 6px 0 0;
+
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* ==============================
+   RESPONSIVE LAYOUT
+   ============================== */
+
+@media (max-width: 800px) {
     .current-weather {
         padding: 28px;
     }
@@ -100,10 +205,13 @@
     }
 }
 
-@media(max-width: 500px){
+@media (max-width: 500px) {
     .current-weather {
-        min-height: auto;
         padding: 24px 20px;
+        gap: 28px;
+    }
+
+    .current-weather-main {
         gap: 12px;
     }
 
@@ -122,5 +230,26 @@
 
     .current-weather-icon .material-symbols-rounded {
         font-size: 52px;
+    }
+
+    .weather-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px 12px;
+    }
+
+    .sun-times {
+        gap: 12px;
+    }
+
+    .sun-time {
+        gap: 8px;
+    }
+
+    .sun-time > .material-symbols-rounded {
+        font-size: 26px;
+    }
+
+    .sun-time p {
+        font-size: 1rem;
     }
 }
