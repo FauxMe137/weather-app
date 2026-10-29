@@ -286,7 +286,7 @@ function App(){
         async function loadInitialWeather() {
             try {
                 const response = await fetch(
-                    'https://geocoding-api.open-meteo.com/v1/search?name=Lagos&count=1&language=en&format=json'
+                    'https://geocoding-api.open-meteo.com/v1/search?name=Benin%20City&count=1&language=en&format=json'
                 );
 
                 if (!response.ok) {
@@ -337,7 +337,7 @@ function App(){
                             </div>
 
                             <HourlyForecast hourly={weather.hourly} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} currentTime={weather.currentTime} />
-                            <DailyForecast daily={weather.daily} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} getWeatherCondition={getWeatherCondition} />
+                            <DailyForecast daily={weather.daily} temperatureUnit={temperatureUnit} getWeatherIcon={getWeatherIcon} getWeatherCondition={getWeatherCondition} hourly={weather.hourly} />
                         </div>
                     </>
                 )}
